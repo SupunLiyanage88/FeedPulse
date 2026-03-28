@@ -1,0 +1,28 @@
+{
+  "name": "feedpulse-backend",
+  "version": "1.0.0",
+  "description": "Backend API for FeedPulse - AI-Powered Product Feedback Platform",
+  "main": "dist/server.js",
+  "scripts": {
+    "dev": "nodemon src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "test": "jest"
+  },
+  "keywords": [
+    "feedback",
+    "ai",
+    "gemini",
+    "express"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "mongoose": "^9.3.3"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6"
+  }
+}
