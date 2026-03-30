@@ -6,15 +6,25 @@ import User from '../models/User';
 export const login = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
+    const adminEmail = process.env.ADMIN_EMAIL ?? 'admin@feedpulse.com';
+    const adminPassword = process.env.ADMIN_PASSWORD ?? 'admin123';
+    const jwtSecret = process.env.JWT_SECRET;
+    if (!jwtSecret) {
+      return res.status(500).json({
+        success: false,
+        message: 'Server auth configuration error (missing JWT secret)',
+      });
+    }
+
     const expiresIn =
       (process.env.JWT_EXPIRES_IN as SignOptions['expiresIn']) ?? '7d';
     
     // Hardcoded admin check (for simplicity)
-    if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
+    if (email === adminEmail && password === adminPassword) {
       // Create token
       const token = jwt.sign(
         { email, role: 'admin' },
-        process.env.JWT_SECRET!,
+        jwtSecret,
         { expiresIn }
       );
       
@@ -36,7 +46,7 @@ export const login = async (req: Request, res: Response) => {
     
     const token = jwt.sign(
       { id: user._id, email: user.email, role: 'admin' },
-      process.env.JWT_SECRET!,
+      jwtSecret,
       { expiresIn }
     );
     
