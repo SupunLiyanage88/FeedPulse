@@ -3,19 +3,33 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const dotenv_1 = __importDefault(require("dotenv"));
 const express_1 = __importDefault(require("express"));
+const cors_1 = __importDefault(require("cors"));
+const helmet_1 = __importDefault(require("helmet"));
+const dotenv_1 = __importDefault(require("dotenv"));
+const database_1 = __importDefault(require("./config/database"));
+const feedbackRoutes_1 = __importDefault(require("./routes/feedbackRoutes"));
+const authRoutes_1 = __importDefault(require("./routes/authRoutes"));
+const errorHandler_1 = __importDefault(require("./middleware/errorHandler"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
-const port = Number(process.env.PORT) || 5000;
+const PORT = process.env.PORT || 4000;
+// Connect to MongoDB
+(0, database_1.default)();
+// Middleware
+app.use((0, helmet_1.default)());
+app.use((0, cors_1.default)());
 app.use(express_1.default.json());
-app.get("/health", (_req, res) => {
-    res.status(200).json({
-        status: "ok",
-        service: "feedpulse-backend",
-        timestamp: new Date().toISOString(),
-    });
+app.use(express_1.default.urlencoded({ extended: true }));
+// Routes
+app.use('/api/auth', authRoutes_1.default);
+app.use('/api/feedback', feedbackRoutes_1.default);
+// Health check
+app.get('/health', (req, res) => {
+    res.status(200).json({ status: 'OK', message: 'Server is running' });
 });
-app.listen(port, () => {
-    console.log(`FeedPulse backend running on http://localhost:${port}`);
+// Error handling middleware (should be last)
+app.use(errorHandler_1.default);
+app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
 });
