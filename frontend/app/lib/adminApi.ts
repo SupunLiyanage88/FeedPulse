@@ -1,4 +1,5 @@
 import { ApiResponse } from './api';
+import { AdminUser } from './adminAuth';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
@@ -46,7 +47,7 @@ export interface WeeklySummaryResponse {
   };
 }
 
-export const adminLogin = async (email: string, password: string): Promise<ApiResponse<{ token: string; user: any }>> => {
+export const adminLogin = async (email: string, password: string): Promise<ApiResponse<{ token: string; user: AdminUser }>> => {
   try {
     const response = await fetch(`${API_URL}/api/auth/login`, {
       method: 'POST',

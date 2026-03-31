@@ -84,7 +84,7 @@ export default function FeedbackForm() {
     });
 
     if (!isFormValid(formErrors)) {
-      setErrors(formErrors);
+      setErrors(formErrors as Record<string, string>);
       return;
     }
 
@@ -133,7 +133,7 @@ export default function FeedbackForm() {
           message: response.message || 'Failed to submit feedback. Please try again.',
         });
       }
-    } catch (error) {
+    } catch {
       setSubmitStatus({
         type: 'error',
         message: 'An unexpected error occurred. Please try again.',
@@ -156,22 +156,22 @@ export default function FeedbackForm() {
   }
 
   return (
-    <div className="w-full max-w-2xl mx-auto">
-      <form onSubmit={handleSubmit} className="space-y-6">
+    <div className="w-full">
+      <form onSubmit={handleSubmit} className="space-y-7">
         {/* Rate Limit Info */}
         {rateLimitInfo.allowed && rateLimitInfo.remainingSubmissions <= 2 && (
-          <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-            <p className="text-sm text-yellow-800">
-              ⚠️ You have {rateLimitInfo.remainingSubmissions} submission
+          <div className="rounded-2xl border border-[#efd9a6] bg-[#fff9ec] p-4">
+            <p className="text-sm text-[#8a6200]">
+              You have {rateLimitInfo.remainingSubmissions} submission
               {rateLimitInfo.remainingSubmissions !== 1 ? 's' : ''} left this hour.
             </p>
           </div>
         )}
 
         {!rateLimitInfo.allowed && (
-          <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
-            <p className="text-sm text-red-800">
-              ❌ You've reached the submission limit (5 per hour). Please try again later.
+          <div className="rounded-2xl border border-[#efbfca] bg-[#fff4f7] p-4">
+            <p className="text-sm text-[#972439]">
+              You have reached the submission limit (5 per hour). Please try again later.
             </p>
           </div>
         )}
@@ -179,29 +179,29 @@ export default function FeedbackForm() {
         {/* Success/Error Messages */}
         {submitStatus.type && (
           <div
-            className={`p-4 rounded-lg border ${
+            className={`rounded-2xl border p-4 ${
               submitStatus.type === 'success'
-                ? 'bg-green-50 border-green-200'
-                : 'bg-red-50 border-red-200'
+                ? 'border-[#b6dfc4] bg-[#effbf3]'
+                : 'border-[#efbfca] bg-[#fff4f7]'
             }`}
           >
             <p
-              className={`text-sm ${
+              className={`text-sm font-medium ${
                 submitStatus.type === 'success'
-                  ? 'text-green-800'
-                  : 'text-red-800'
+                  ? 'text-[#28683e]'
+                  : 'text-[#972439]'
               }`}
             >
-              {submitStatus.type === 'success' ? '✓ ' : '✕ '}
+              {submitStatus.type === 'success' ? 'Success: ' : 'Error: '}
               {submitStatus.message}
             </p>
           </div>
         )}
 
         {/* Title Field */}
-        <div>
-          <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
-            Title <span className="text-red-500">*</span>
+        <div className="space-y-2">
+          <label htmlFor="title" className="block text-sm font-semibold text-[#1f4e78]">
+            Title <span className="text-[#b11f33]">*</span>
           </label>
           <input
             type="text"
@@ -212,20 +212,20 @@ export default function FeedbackForm() {
             placeholder="Subject of your feedback"
             maxLength={120}
             disabled={isSubmitting || !rateLimitInfo.allowed}
-            className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 ${
+            className={`fp-input px-4 py-3 text-sm ${
               errors.title
-                ? 'border-red-500 focus:ring-red-500'
-                : 'border-gray-300 focus:ring-blue-500'
-            } disabled:bg-gray-100 disabled:cursor-not-allowed`}
+                ? 'border-[#b11f33] !shadow-[0_0_0_3px_rgba(177,31,51,0.15)]'
+                : ''
+            }`}
           />
-          {errors.title && <p className="text-sm text-red-500 mt-1">{errors.title}</p>}
-          <p className="text-xs text-gray-500 mt-1">{formData.title.length}/120 characters</p>
+          {errors.title && <p className="text-sm text-[#b11f33]">{errors.title}</p>}
+          <p className="text-xs text-[#5f7f9b]">{formData.title.length}/120 characters</p>
         </div>
 
         {/* Category Field */}
-        <div>
-          <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-2">
-            Category <span className="text-red-500">*</span>
+        <div className="space-y-2">
+          <label htmlFor="category" className="block text-sm font-semibold text-[#1f4e78]">
+            Category <span className="text-[#b11f33]">*</span>
           </label>
           <select
             id="category"
@@ -233,19 +233,19 @@ export default function FeedbackForm() {
             value={formData.category}
             onChange={handleInputChange}
             disabled={isSubmitting || !rateLimitInfo.allowed}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+            className="fp-select px-4 py-3 text-sm"
           >
-            <option value="Bug">🐛 Bug</option>
-            <option value="Feature Request">✨ Feature Request</option>
-            <option value="Improvement">📈 Improvement</option>
-            <option value="Other">💭 Other</option>
+            <option value="Bug">Bug</option>
+            <option value="Feature Request">Feature Request</option>
+            <option value="Improvement">Improvement</option>
+            <option value="Other">Other</option>
           </select>
         </div>
 
         {/* Description Field */}
-        <div>
-          <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
-            Description <span className="text-red-500">*</span>
+        <div className="space-y-2">
+          <label htmlFor="description" className="block text-sm font-semibold text-[#1f4e78]">
+            Description <span className="text-[#b11f33]">*</span>
           </label>
           <textarea
             id="description"
@@ -255,16 +255,16 @@ export default function FeedbackForm() {
             placeholder="Please provide detailed feedback (minimum 20 characters)"
             rows={5}
             disabled={isSubmitting || !rateLimitInfo.allowed}
-            className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 resize-none ${
+            className={`fp-textarea resize-none px-4 py-3 text-sm ${
               errors.description
-                ? 'border-red-500 focus:ring-red-500'
-                : 'border-gray-300 focus:ring-blue-500'
-            } disabled:bg-gray-100 disabled:cursor-not-allowed`}
+                ? 'border-[#b11f33] !shadow-[0_0_0_3px_rgba(177,31,51,0.15)]'
+                : ''
+            }`}
           />
           {errors.description && (
-            <p className="text-sm text-red-500 mt-1">{errors.description}</p>
+            <p className="text-sm text-[#b11f33]">{errors.description}</p>
           )}
-          <div className="flex justify-between items-center mt-2">
+          <div className="mt-2 flex items-center justify-between">
             <p className={`text-xs font-medium ${descriptionStatus}`}>
               {descriptionLength}/20 minimum • {descriptionLength} characters
               {descriptionLength >= 20 && ' ✓'}
@@ -273,9 +273,9 @@ export default function FeedbackForm() {
         </div>
 
         {/* Name Field (Optional) */}
-        <div>
-          <label htmlFor="submitterName" className="block text-sm font-medium text-gray-700 mb-2">
-            Name <span className="text-gray-500">(optional)</span>
+        <div className="space-y-2">
+          <label htmlFor="submitterName" className="block text-sm font-semibold text-[#1f4e78]">
+            Name <span className="text-[#6888a3]">(optional)</span>
           </label>
           <input
             type="text"
@@ -285,14 +285,14 @@ export default function FeedbackForm() {
             onChange={handleInputChange}
             placeholder="Your name"
             disabled={isSubmitting || !rateLimitInfo.allowed}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+            className="fp-input px-4 py-3 text-sm"
           />
         </div>
 
         {/* Email Field (Optional) */}
-        <div>
-          <label htmlFor="submitterEmail" className="block text-sm font-medium text-gray-700 mb-2">
-            Email <span className="text-gray-500">(optional)</span>
+        <div className="space-y-2">
+          <label htmlFor="submitterEmail" className="block text-sm font-semibold text-[#1f4e78]">
+            Email <span className="text-[#6888a3]">(optional)</span>
           </label>
           <input
             type="email"
@@ -302,14 +302,14 @@ export default function FeedbackForm() {
             onChange={handleInputChange}
             placeholder="your.email@example.com"
             disabled={isSubmitting || !rateLimitInfo.allowed}
-            className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 ${
+            className={`fp-input px-4 py-3 text-sm ${
               errors.submitterEmail
-                ? 'border-red-500 focus:ring-red-500'
-                : 'border-gray-300 focus:ring-blue-500'
-            } disabled:bg-gray-100 disabled:cursor-not-allowed`}
+                ? 'border-[#b11f33] !shadow-[0_0_0_3px_rgba(177,31,51,0.15)]'
+                : ''
+            }`}
           />
           {errors.submitterEmail && (
-            <p className="text-sm text-red-500 mt-1">{errors.submitterEmail}</p>
+            <p className="text-sm text-[#b11f33]">{errors.submitterEmail}</p>
           )}
         </div>
 
@@ -317,11 +317,7 @@ export default function FeedbackForm() {
         <button
           type="submit"
           disabled={isSubmitting || !rateLimitInfo.allowed}
-          className={`w-full py-3 px-4 rounded-lg font-medium transition-all duration-200 ${
-            isSubmitting || !rateLimitInfo.allowed
-              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-              : 'bg-blue-600 text-white hover:bg-blue-700 active:scale-95'
-          }`}
+          className="fp-button-primary w-full px-4 py-3.5 text-sm"
         >
           {isSubmitting ? (
             <span className="flex items-center justify-center">
@@ -337,7 +333,7 @@ export default function FeedbackForm() {
         </button>
 
         {/* Footer Note */}
-        <p className="text-xs text-gray-500 text-center">
+        <p className="text-center text-xs text-[#5f7f9b]">
           No account needed. We value your feedback to improve our service.
         </p>
       </form>

@@ -50,14 +50,15 @@ export default function Pagination({
   const pages = getPageNumbers();
 
   return (
-    <div className="flex items-center justify-center gap-2 mt-8">
+    <div className="fp-card mt-8 flex flex-wrap items-center justify-center gap-2 p-4 sm:justify-between">
+      <div className="flex items-center gap-2">
       {/* Previous Button */}
       <button
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1 || loading}
-        className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition"
+        className="rounded-lg border border-[#c7dbef] px-4 py-2 text-sm font-semibold text-[#3f6482] transition hover:bg-[#edf4fb] disabled:cursor-not-allowed disabled:opacity-50"
       >
-        ← Previous
+        Previous
       </button>
 
       {/* Page Numbers */}
@@ -73,10 +74,10 @@ export default function Pagination({
             disabled={page === '...' || page === currentPage || loading}
             className={`px-3 py-2 rounded-lg text-sm font-medium transition ${
               page === currentPage
-                ? 'bg-blue-600 text-white'
+                ? 'bg-[#2e74b5] text-white'
                 : page === '...'
-                ? 'text-gray-500 cursor-default'
-                : 'border border-gray-300 text-gray-700 hover:bg-gray-50'
+                ? 'cursor-default text-[#7290aa]'
+                : 'border border-[#c7dbef] text-[#3f6482] hover:bg-[#edf4fb]'
             } disabled:opacity-50 disabled:cursor-not-allowed`}
           >
             {page}
@@ -88,13 +89,14 @@ export default function Pagination({
       <button
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages || loading}
-        className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition"
+        className="rounded-lg border border-[#c7dbef] px-4 py-2 text-sm font-semibold text-[#3f6482] transition hover:bg-[#edf4fb] disabled:cursor-not-allowed disabled:opacity-50"
       >
-        Next →
+        Next
       </button>
+      </div>
 
       {/* Page Info */}
-      <div className="ml-4 text-sm text-gray-600">
+      <div className="text-sm text-[#5e7d98]">
         Page {currentPage} of {totalPages}
       </div>
     </div>

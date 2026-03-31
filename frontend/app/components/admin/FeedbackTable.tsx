@@ -15,31 +15,31 @@ interface FeedbackTableProps {
 
 const getCategoryBadgeColor = (category: string) => {
   const colors: Record<string, string> = {
-    'Bug': 'bg-red-100 text-red-800',
-    'Feature Request': 'bg-blue-100 text-blue-800',
-    'Improvement': 'bg-purple-100 text-purple-800',
-    'Other': 'bg-gray-100 text-gray-800',
+    'Bug': 'bg-[#ffecef] text-[#a01f31]',
+    'Feature Request': 'bg-[#deebf8] text-[#1f4e78]',
+    'Improvement': 'bg-[#f0ecfb] text-[#5a3d9b]',
+    'Other': 'bg-[#eef3f8] text-[#496b88]',
   };
-  return colors[category] || 'bg-gray-100 text-gray-800';
+  return colors[category] || 'bg-[#eef3f8] text-[#496b88]';
 };
 
 const getSentimentBadgeColor = (sentiment: string | undefined) => {
-  if (!sentiment) return 'bg-gray-100 text-gray-700';
+  if (!sentiment) return 'bg-[#eef3f8] text-[#5a7893]';
   const colors: Record<string, string> = {
-    'Positive': 'bg-green-100 text-green-800',
-    'Neutral': 'bg-yellow-100 text-yellow-800',
-    'Negative': 'bg-red-100 text-red-800',
+    'Positive': 'bg-[#e8f7ef] text-[#2d7145]',
+    'Neutral': 'bg-[#fff4df] text-[#986607]',
+    'Negative': 'bg-[#ffecef] text-[#a01f31]',
   };
-  return colors[sentiment] || 'bg-gray-100 text-gray-700';
+  return colors[sentiment] || 'bg-[#eef3f8] text-[#5a7893]';
 };
 
 const getStatusColor = (status: string) => {
   const colors: Record<string, string> = {
-    'New': 'bg-blue-50 text-blue-700 border-blue-200',
-    'In Review': 'bg-yellow-50 text-yellow-700 border-yellow-200',
-    'Resolved': 'bg-green-50 text-green-700 border-green-200',
+    'New': 'bg-[#deebf8] text-[#1f4e78] border-[#bfd6ec]',
+    'In Review': 'bg-[#fff4df] text-[#986607] border-[#efd9a7]',
+    'Resolved': 'bg-[#e8f7ef] text-[#2d7145] border-[#badfc8]',
   };
-  return colors[status] || 'bg-gray-50 text-gray-700 border-gray-200';
+  return colors[status] || 'bg-[#eef3f8] text-[#496b88] border-[#c6d8ea]';
 };
 
 const formatDate = (dateString: string) => {
@@ -62,12 +62,12 @@ export default function FeedbackTable({
 }: FeedbackTableProps) {
   if (loading) {
     return (
-      <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+      <div className="fp-card overflow-hidden">
         <div className="animate-pulse">
           {[...Array(5)].map((_, i) => (
             <div
               key={i}
-              className="border-b border-gray-200 p-6 h-24 bg-gray-50"
+              className="h-24 border-b border-[#d8e7f4] bg-[#edf4fb] p-6"
             />
           ))}
         </div>
@@ -77,37 +77,37 @@ export default function FeedbackTable({
 
   if (feedbacks.length === 0) {
     return (
-      <div className="bg-white rounded-lg border border-gray-200 p-10 text-center">
-        <p className="text-gray-500 text-lg">No feedback found. Try adjusting your filters.</p>
+      <div className="fp-card p-10 text-center">
+        <p className="text-lg text-[#607f9b]">No feedback found. Try adjusting your filters.</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+    <div className="fp-card overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full">
-          <thead className="bg-gray-50 border-b border-gray-200">
+          <thead className="border-b border-[#d5e5f3] bg-[#edf4fb]">
             <tr>
-              <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
+              <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-[#3b5e7e]">
                 Title
               </th>
-              <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
+              <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-[#3b5e7e]">
                 Category
               </th>
-              <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
+              <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-[#3b5e7e]">
                 Sentiment
               </th>
-              <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
+              <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-[#3b5e7e]">
                 Priority
               </th>
-              <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
+              <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-[#3b5e7e]">
                 Status
               </th>
-              <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
+              <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-[#3b5e7e]">
                 Date
               </th>
-              <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
+              <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-[#3b5e7e]">
                 Actions
               </th>
             </tr>
@@ -116,13 +116,13 @@ export default function FeedbackTable({
             {feedbacks.map((feedback) => (
               <tr
                 key={feedback._id}
-                className="border-b border-gray-200 hover:bg-gray-50 transition"
+                className="border-b border-[#e1edf8] transition hover:bg-[#f7fbff]"
               >
                 {/* Title */}
                 <td className="px-6 py-4">
                   <div>
-                    <p className="font-medium text-gray-900 text-sm">{feedback.title}</p>
-                    <p className="text-gray-600 text-xs mt-1 line-clamp-1">
+                    <p className="text-sm font-semibold text-[#1f4e78]">{feedback.title}</p>
+                    <p className="mt-1 line-clamp-1 text-xs text-[#567693]">
                       {feedback.ai_summary || feedback.description}
                     </p>
                   </div>
@@ -142,7 +142,7 @@ export default function FeedbackTable({
                       {feedback.ai_sentiment}
                     </span>
                   ) : (
-                    <span className="text-gray-400 text-sm">—</span>
+                    <span className="text-sm text-[#89a2ba]">-</span>
                   )}
                 </td>
 
@@ -150,18 +150,18 @@ export default function FeedbackTable({
                 <td className="px-6 py-4">
                   {feedback.ai_priority ? (
                     <div className="flex items-center gap-2">
-                      <div className="w-24 bg-gray-200 rounded-full h-2">
+                      <div className="h-2 w-24 rounded-full bg-[#d5e5f3]">
                         <div
-                          className="bg-blue-600 h-2 rounded-full"
+                          className="h-2 rounded-full bg-[#2e74b5]"
                           style={{ width: `${(feedback.ai_priority / 10) * 100}%` }}
                         ></div>
                       </div>
-                      <span className="font-medium text-sm text-gray-700">
+                      <span className="text-sm font-semibold text-[#355b7a]">
                         {feedback.ai_priority}/10
                       </span>
                     </div>
                   ) : (
-                    <span className="text-gray-400 text-sm">—</span>
+                    <span className="text-sm text-[#89a2ba]">-</span>
                   )}
                 </td>
 
@@ -176,7 +176,7 @@ export default function FeedbackTable({
                       )
                     }
                     disabled={statusUpdating[feedback._id] || false}
-                    className={`px-3 py-1 rounded-lg text-sm font-medium border outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 ${getStatusColor(feedback.status)}`}
+                    className={`rounded-lg border px-3 py-1 text-sm font-semibold outline-none focus:ring-2 focus:ring-[#2e74b5]/30 disabled:opacity-50 ${getStatusColor(feedback.status)}`}
                   >
                     <option value="New">New</option>
                     <option value="In Review">In Review</option>
@@ -186,23 +186,23 @@ export default function FeedbackTable({
 
                 {/* Date */}
                 <td className="px-6 py-4">
-                  <span className="text-gray-600 text-sm">{formatDate(feedback.createdAt)}</span>
+                  <span className="text-sm text-[#577794]">{formatDate(feedback.createdAt)}</span>
                 </td>
 
                 {/* Actions */}
                 <td className="px-6 py-4">
-                  <div className="flex items-center gap-3">
+                  <div className="flex min-w-max items-center gap-3 whitespace-nowrap">
                     <button
                       onClick={() => onReanalyze(feedback._id)}
                       disabled={reanalyzing[feedback._id] || false}
-                      className="text-blue-600 hover:text-blue-800 disabled:opacity-50 text-sm font-medium"
+                      className="text-sm font-semibold text-[#2e74b5] hover:text-[#1f4e78] disabled:opacity-50"
                     >
                       {reanalyzing[feedback._id] ? 'Analyzing...' : 'Re-run AI'}
                     </button>
                     <button
                       onClick={() => onDelete(feedback._id)}
                       disabled={deleting[feedback._id] || false}
-                      className="text-red-600 hover:text-red-800 disabled:opacity-50 text-sm font-medium"
+                      className="text-sm font-semibold text-[#b11f33] hover:text-[#91182a] disabled:opacity-50"
                     >
                       {deleting[feedback._id] ? 'Deleting...' : 'Delete'}
                     </button>
