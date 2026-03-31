@@ -3,6 +3,34 @@ import Feedback from '../models/Feedback';
 import geminiService from '../services/geminiService';
 import { AuthRequest } from '../middleware/auth';
 
+const runAndPersistGeminiAnalysis = async (feedbackId: string) => {
+  const feedback = await Feedback.findById(feedbackId);
+  if (!feedback) {
+    return null;
+  }
+
+  const analysis = await geminiService.analyzeFeedback(feedback.title, feedback.description);
+  if (!analysis) {
+    return {
+      feedback,
+      analyzed: false,
+    };
+  }
+
+  feedback.ai_category = analysis.category;
+  feedback.ai_sentiment = analysis.sentiment;
+  feedback.ai_priority = analysis.priority_score;
+  feedback.ai_summary = analysis.summary;
+  feedback.ai_tags = analysis.tags;
+  feedback.ai_processed = true;
+  await feedback.save();
+
+  return {
+    feedback,
+    analyzed: true,
+  };
+};
+
 // Submit new feedback
 export const submitFeedback = async (req: Request, res: Response) => {
   try {
@@ -19,16 +47,9 @@ export const submitFeedback = async (req: Request, res: Response) => {
     
     await feedback.save();
     
-    // Trigger AI analysis asynchronously (don't await)
-    geminiService.analyzeFeedback(title, description).then(async (analysis) => {
-      if (analysis) {
-        feedback.ai_category = analysis.category;
-        feedback.ai_sentiment = analysis.sentiment as any;
-        feedback.ai_priority = analysis.priority_score;
-        feedback.ai_summary = analysis.summary;
-        feedback.ai_tags = analysis.tags;
-        feedback.ai_processed = true;
-        await feedback.save();
+    // Trigger AI analysis asynchronously so feedback is saved even if AI fails.
+    runAndPersistGeminiAnalysis(String(feedback._id)).then((result) => {
+      if (result?.analyzed) {
         console.log(`AI analysis completed for feedback ${feedback._id}`);
       }
     }).catch(error => {
@@ -271,6 +292,39 @@ export const getStats = async (req: AuthRequest, res: Response) => {
         averagePriority: parseFloat(avgPriority as string),
         mostCommonTag,
       },
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+// Manually re-run AI analysis for one feedback item (admin only)
+export const retriggerAIAnalysis = async (req: AuthRequest, res: Response) => {
+  try {
+    const feedbackId = String(req.params.id);
+    const feedback = await Feedback.findById(feedbackId);
+    if (!feedback) {
+      return res.status(404).json({
+        success: false,
+        message: 'Feedback not found',
+      });
+    }
+
+    const result = await runAndPersistGeminiAnalysis(feedbackId);
+    if (!result?.analyzed) {
+      return res.status(502).json({
+        success: false,
+        message: 'Gemini analysis failed to produce valid structured JSON. Please retry or verify GEMINI_API_KEY/quota.',
+      });
+    }
+
+    res.json({
+      success: true,
+      data: result.feedback,
+      message: 'AI analysis re-triggered successfully',
     });
   } catch (error: any) {
     res.status(500).json({

@@ -7,7 +7,9 @@ interface FeedbackTableProps {
   loading: boolean;
   onStatusChange: (feedbackId: string, newStatus: 'New' | 'In Review' | 'Resolved') => void;
   onDelete: (feedbackId: string) => void;
+  onReanalyze: (feedbackId: string) => void;
   statusUpdating: Record<string, boolean>;
+  reanalyzing: Record<string, boolean>;
   deleting: Record<string, boolean>;
 }
 
@@ -53,7 +55,9 @@ export default function FeedbackTable({
   loading,
   onStatusChange,
   onDelete,
+  onReanalyze,
   statusUpdating,
+  reanalyzing,
   deleting,
 }: FeedbackTableProps) {
   if (loading) {
@@ -187,13 +191,22 @@ export default function FeedbackTable({
 
                 {/* Actions */}
                 <td className="px-6 py-4">
-                  <button
-                    onClick={() => onDelete(feedback._id)}
-                    disabled={deleting[feedback._id] || false}
-                    className="text-red-600 hover:text-red-800 disabled:opacity-50 text-sm font-medium"
-                  >
-                    {deleting[feedback._id] ? 'Deleting...' : 'Delete'}
-                  </button>
+                  <div className="flex items-center gap-3">
+                    <button
+                      onClick={() => onReanalyze(feedback._id)}
+                      disabled={reanalyzing[feedback._id] || false}
+                      className="text-blue-600 hover:text-blue-800 disabled:opacity-50 text-sm font-medium"
+                    >
+                      {reanalyzing[feedback._id] ? 'Analyzing...' : 'Re-run AI'}
+                    </button>
+                    <button
+                      onClick={() => onDelete(feedback._id)}
+                      disabled={deleting[feedback._id] || false}
+                      className="text-red-600 hover:text-red-800 disabled:opacity-50 text-sm font-medium"
+                    >
+                      {deleting[feedback._id] ? 'Deleting...' : 'Delete'}
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}

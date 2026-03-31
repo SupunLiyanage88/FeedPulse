@@ -37,6 +37,15 @@ export interface FeedbackListResponse {
   };
 }
 
+export interface WeeklySummaryResponse {
+  summary: string;
+  totalCount: number;
+  dateRange?: {
+    from: string;
+    to: string;
+  };
+}
+
 export const adminLogin = async (email: string, password: string): Promise<ApiResponse<{ token: string; user: any }>> => {
   try {
     const response = await fetch(`${API_URL}/api/auth/login`, {
@@ -224,6 +233,77 @@ export const deleteFeedback = async (
     };
   } catch (error) {
     console.error('Delete feedback error:', error);
+    return {
+      success: false,
+      message: 'Network error. Please try again.',
+      error: error instanceof Error ? error.message : 'Unknown error',
+    };
+  }
+};
+
+export const retriggerFeedbackAnalysis = async (
+  token: string,
+  feedbackId: string
+): Promise<ApiResponse<Feedback>> => {
+  try {
+    const response = await fetch(`${API_URL}/api/admin/feedback/${feedbackId}/reanalyze`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    const data = await response.json();
+    if (!response.ok) {
+      return {
+        success: false,
+        message: data.message || 'Failed to re-run AI analysis',
+      };
+    }
+
+    return {
+      success: true,
+      message: data.message || 'AI analysis completed',
+      data: data.data,
+    };
+  } catch (error) {
+    console.error('Re-analyze feedback error:', error);
+    return {
+      success: false,
+      message: 'Network error. Please try again.',
+      error: error instanceof Error ? error.message : 'Unknown error',
+    };
+  }
+};
+
+export const getWeeklySummary = async (
+  token: string
+): Promise<ApiResponse<WeeklySummaryResponse>> => {
+  try {
+    const response = await fetch(`${API_URL}/api/admin/summary`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    const data = await response.json();
+    if (!response.ok) {
+      return {
+        success: false,
+        message: data.message || 'Failed to fetch weekly summary',
+      };
+    }
+
+    return {
+      success: true,
+      message: 'Weekly summary fetched successfully',
+      data: data.data,
+    };
+  } catch (error) {
+    console.error('Fetch weekly summary error:', error);
     return {
       success: false,
       message: 'Network error. Please try again.',

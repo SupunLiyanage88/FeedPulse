@@ -5,6 +5,7 @@ import {
   deleteFeedback,
   getAISummary,
   getStats,
+  retriggerAIAnalysis,
 } from '../controllers/feedbackController';
 import { authenticate } from '../middleware/auth';
 
@@ -19,6 +20,7 @@ router.get('/stats', getStats);
 // Feedback management
 router.get('/feedback', getAllFeedback);
 router.patch('/feedback/:id/status', updateFeedbackStatus);
+router.post('/feedback/:id/reanalyze', retriggerAIAnalysis);
 router.delete('/feedback/:id', deleteFeedback);
 
 // Weekly summary
