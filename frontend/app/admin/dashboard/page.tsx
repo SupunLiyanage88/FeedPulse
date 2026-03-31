@@ -18,11 +18,18 @@ import StatsBar from '@/app/components/admin/StatsBar';
 import FilterBar from '@/app/components/admin/FilterBar';
 import FeedbackTable from '@/app/components/admin/FeedbackTable';
 import Pagination from '@/app/components/admin/Pagination';
+import { 
+  LogOut, 
+  RefreshCw, 
+  TrendingUp, 
+  MessageSquare, 
+  BarChart3,
+  Sparkles 
+} from 'lucide-react';
 
 export default function AdminDashboard() {
   const router = useRouter();
-  const [token, setToken] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [token] = useState<string | null>(() => getAdminToken());
 
   // Data states
   const [stats, setStats] = useState<DashboardStats | null>(null);
@@ -47,14 +54,10 @@ export default function AdminDashboard() {
 
   // Check authentication on mount
   useEffect(() => {
-    const adminToken = getAdminToken();
-    if (!adminToken) {
+    if (!token) {
       router.push('/admin/login');
-    } else {
-      setToken(adminToken);
-      setIsLoading(false);
     }
-  }, [router]);
+  }, [router, token]);
 
   // Fetch stats
   const fetchStats = async () => {
@@ -110,6 +113,7 @@ export default function AdminDashboard() {
       fetchFeedback();
       fetchWeeklySummary();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
 
   // Refetch feedback when filters change
@@ -118,6 +122,7 @@ export default function AdminDashboard() {
       setCurrentPage(1);
       fetchFeedback();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [category, status, sortBy, search, token]);
 
   // Refetch feedback when page changes
@@ -125,6 +130,7 @@ export default function AdminDashboard() {
     if (token && currentPage > 1) {
       fetchFeedback();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage, token]);
 
   const handleStatusChange = async (feedbackId: string, newStatus: 'New' | 'In Review' | 'Resolved') => {
@@ -137,13 +143,11 @@ export default function AdminDashboard() {
     setStatusUpdating((prev) => ({ ...prev, [feedbackId]: false }));
 
     if (result.success) {
-      // Update local state
       setFeedbacks((prev) =>
         prev.map((f) =>
           f._id === feedbackId ? { ...f, status: newStatus } : f
         )
       );
-      // Refresh stats
       fetchStats();
     } else {
       alert('Failed to update status: ' + result.message);
@@ -164,9 +168,7 @@ export default function AdminDashboard() {
     setDeleting((prev) => ({ ...prev, [feedbackId]: false }));
 
     if (result.success) {
-      // Remove from local state
       setFeedbacks((prev) => prev.filter((f) => f._id !== feedbackId));
-      // Refresh stats
       fetchStats();
       fetchWeeklySummary();
     } else {
@@ -205,64 +207,87 @@ export default function AdminDashboard() {
     router.push('/admin/login');
   };
 
-  if (isLoading) {
+  if (!token) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div>
-          <p className="mt-4 text-gray-600">Loading dashboard...</p>
+      <div className="flex min-h-screen items-center justify-center bg-linear-to-r from-slate-50 to-slate-100">
+        <div className="rounded-2xl bg-white/80 backdrop-blur-sm p-8 shadow-xl">
+          <div className="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-indigo-500 border-t-transparent"></div>
+          <p className="mt-4 text-sm font-medium text-slate-600">Redirecting to login...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-linear-to-r from-slate-50 via-white to-slate-50">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">FeedPulse Admin</h1>
-              <p className="text-gray-600 text-sm mt-1">Feedback Management Dashboard</p>
+      <header className="sticky top-0 z-20 border-b border-slate-200 bg-white/80 backdrop-blur-lg shadow-sm">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="flex h-16 items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <div>
+                <h1 className="text-xl font-bold bg-linear-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent">
+                  FeedPulse
+                </h1>
+                <p className="text-xs text-slate-500">Admin Dashboard</p>
+              </div>
             </div>
             <button
               onClick={handleLogout}
-              className="px-6 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition"
+              className="flex items-center gap-2 rounded-xl bg-slate-50 px-4 py-2 text-sm font-medium text-slate-700 transition-all hover:bg-slate-100 hover:shadow-md"
             >
-              Logout
+              <LogOut className="h-4 w-4" />
+              <span>Logout</span>
             </button>
           </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         {/* Stats Bar */}
         <StatsBar stats={stats} loading={statsLoading} />
 
         {/* Weekly AI Summary */}
-        <section className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
-          <div className="flex items-center justify-between gap-3 mb-2">
-            <h2 className="text-lg font-semibold text-gray-900">AI Weekly Summary</h2>
-            <button
-              onClick={fetchWeeklySummary}
-              disabled={summaryLoading}
-              className="px-3 py-2 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded-lg disabled:opacity-50"
-            >
-              {summaryLoading ? 'Refreshing...' : 'Refresh'}
-            </button>
+        <div className="mb-8 overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-200/80">
+          <div className="border-b border-slate-100 bg-linear-to-r from-indigo-50/50 to-purple-50/50 px-6 py-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Sparkles className="h-5 w-5 text-indigo-500" />
+                <h2 className="text-base font-semibold text-slate-800">AI Weekly Summary</h2>
+              </div>
+              <button
+                onClick={fetchWeeklySummary}
+                disabled={summaryLoading}
+                className="flex items-center gap-2 rounded-lg bg-white px-3 py-1.5 text-sm font-medium text-slate-600 shadow-sm transition-all hover:bg-slate-50 disabled:opacity-50"
+              >
+                <RefreshCw className={`h-3.5 w-3.5 ${summaryLoading ? 'animate-spin' : ''}`} />
+                <span>{summaryLoading ? 'Refreshing...' : 'Refresh'}</span>
+              </button>
+            </div>
+            <p className="mt-1 text-xs text-slate-500">Top insights from the last 7 days</p>
           </div>
-          <p className="text-sm text-gray-600 mb-3">Top 3 themes from the last 7 days of feedback.</p>
-          <p className="text-gray-800 leading-relaxed">
-            {summaryLoading
-              ? 'Generating summary...'
-              : summary?.summary || 'No summary available yet.'}
-          </p>
-          <p className="text-xs text-gray-500 mt-3">
-            Feedback items analyzed: {summary?.totalCount ?? 0}
-          </p>
-        </section>
+          <div className="p-6">
+            {summaryLoading ? (
+              <div className="flex items-center justify-center py-8">
+                <div className="flex items-center gap-2 text-slate-400">
+                  <RefreshCw className="h-4 w-4 animate-spin" />
+                  <span className="text-sm">Analyzing feedback patterns...</span>
+                </div>
+              </div>
+            ) : (
+              <>
+                <p className="leading-relaxed text-slate-700">
+                  {summary?.summary || 'No feedback data available for the past week.'}
+                </p>
+                <div className="mt-4 flex items-center gap-2 text-xs text-slate-400">
+                  <BarChart3 className="h-3.5 w-3.5" />
+                  <span>{summary?.totalCount ?? 0} feedback items analyzed</span>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
 
         {/* Filters */}
         <FilterBar

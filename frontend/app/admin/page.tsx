@@ -17,10 +17,10 @@ export default function AdminPage() {
   }, [router]);
 
   return (
-    <div className="flex items-center justify-center min-h-screen">
-      <div className="text-center">
-        <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div>
-        <p className="mt-4 text-gray-600">Redirecting...</p>
+    <div className="flex min-h-screen items-center justify-center px-4">
+      <div className="fp-card w-full max-w-sm p-8 text-center">
+        <div className="mx-auto inline-block h-12 w-12 animate-spin rounded-full border-b-2 border-t-2 border-[#2e74b5]"></div>
+        <p className="mt-4 text-sm font-medium text-[#355b7a]">Redirecting to admin experience...</p>
       </div>
     </div>
   );

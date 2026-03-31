@@ -2,89 +2,70 @@ import FeedbackForm from './components/FeedbackForm';
 
 export default function Home() {
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
-      {/* Header */}
-      <header className="bg-white border-b border-gray-200 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex items-center justify-between">
+    <div className="flex min-h-screen flex-col">
+      <header className="pt-8 pb-6">
+        <div className="fp-shell">
+          <div className="fp-card flex flex-wrap items-center justify-between gap-6 px-6 py-5 sm:px-8">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">FeedPulse</h1>
-              <p className="text-gray-600 mt-1">Your voice matters to us</p>
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#2e74b5]">Feedback Platform</p>
+              <h1 className="mt-2 text-3xl font-bold text-[#163f61] sm:text-4xl">FeedPulse</h1>
+              <p className="mt-2 text-sm text-[#335b7b] sm:text-base">Simple feedback collection with thoughtful analysis.</p>
+            </div>
+            <div className="fp-soft-card px-4 py-3 text-sm text-[#1f4e78]">
+              <p className="font-semibold">No account required</p>
+              <p className="mt-1 text-xs text-[#365f80]">Share ideas, issues, and improvements in minutes.</p>
             </div>
           </div>
         </div>
       </header>
 
-      {/* Main Content */}
-      <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Left Column - Info */}
-          <div className="lg:col-span-1">
-            <div className="sticky top-8">
-              <div className="bg-white rounded-xl shadow-lg p-8 space-y-6">
-                <div>
-                  <h2 className="text-xl font-bold text-gray-900 mb-3">Share Your Feedback</h2>
-                  <p className="text-gray-600 text-sm leading-relaxed">
-                    We're constantly improving FeedPulse. Your feedback helps us understand what's working and what needs improvement.
-                  </p>
+      <main className="flex-1 pb-14">
+        <div className="fp-shell">
+          <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.35fr)]">
+            <section className="fp-soft-card h-fit space-y-7 p-6 sm:p-8 lg:sticky lg:top-8">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#2e74b5]">Why this works</p>
+                <h2 className="mt-2 text-2xl font-bold text-[#173f60] sm:text-3xl">Feedback that turns into action</h2>
+                <p className="mt-3 text-sm leading-relaxed text-[#355b79] sm:text-base">
+                  Keep it short, clear, and honest. Every submission is categorized and reviewed to help us improve faster.
+                </p>
+              </div>
+
+              <div className="space-y-4">
+                <div className="fp-card px-4 py-4 sm:px-5">
+                  <p className="text-sm font-semibold text-[#1f4e78]">Fast to submit</p>
+                  <p className="mt-1 text-xs text-[#4a6f8d]">A short form with no signup friction.</p>
                 </div>
-
-                <div className="space-y-4">
-                  <div className="flex items-start gap-3">
-                    <div className="flex-shrink-0 w-6 h-6 rounded-full bg-green-100 flex items-center justify-center">
-                      <span className="text-green-600 text-sm font-bold">✓</span>
-                    </div>
-                    <div>
-                      <p className="font-medium text-gray-900 text-sm">No Account Needed</p>
-                      <p className="text-gray-600 text-xs">Anonymous submissions welcome</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-3">
-                    <div className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center">
-                      <span className="text-blue-600 text-sm font-bold">⚡</span>
-                    </div>
-                    <div>
-                      <p className="font-medium text-gray-900 text-sm">AI-Powered Analysis</p>
-                      <p className="text-gray-600 text-xs">Smart categorization of feedback</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-3">
-                    <div className="flex-shrink-0 w-6 h-6 rounded-full bg-purple-100 flex items-center justify-center">
-                      <span className="text-purple-600 text-sm font-bold">🔒</span>
-                    </div>
-                    <div>
-                      <p className="font-medium text-gray-900 text-sm">Privacy Focused</p>
-                      <p className="text-gray-600 text-xs">Your data is secure with us</p>
-                    </div>
-                  </div>
+                <div className="fp-card px-4 py-4 sm:px-5">
+                  <p className="text-sm font-semibold text-[#1f4e78]">Consistent review</p>
+                  <p className="mt-1 text-xs text-[#4a6f8d]">AI-assisted summaries and prioritization.</p>
                 </div>
-
-                <div className="pt-4 border-t border-gray-200">
-                  <p className="text-xs text-gray-500 leading-relaxed">
-                    <strong>Rate Limit:</strong> 5 submissions per hour per device to maintain quality and prevent spam.
-                  </p>
+                <div className="fp-card px-4 py-4 sm:px-5">
+                  <p className="text-sm font-semibold text-[#1f4e78]">Protected quality</p>
+                  <p className="mt-1 text-xs text-[#4a6f8d]">Rate limit keeps submissions useful and fair.</p>
                 </div>
               </div>
-            </div>
-          </div>
 
-          {/* Right Column - Form */}
-          <div className="lg:col-span-2">
-            <div className="bg-white rounded-xl shadow-lg p-8">
+              <p className="text-xs leading-relaxed text-[#5a7893]">
+                Submission limit: 5 entries per hour on each device.
+              </p>
+            </section>
+
+            <section className="fp-card p-6 sm:p-8 lg:p-10">
+              <div className="mb-6 border-b border-[#d7e5f3] pb-5">
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#2e74b5]">Send feedback</p>
+                <h2 className="mt-2 text-2xl font-bold text-[#173f60]">Tell us what you noticed</h2>
+                <p className="mt-2 text-sm text-[#486989]">Bug report, feature request, suggestion, or anything else that helps us improve.</p>
+              </div>
               <FeedbackForm />
-            </div>
+            </section>
           </div>
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="bg-white border-t border-gray-200 mt-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="text-center text-gray-600 text-sm">
-            <p>© 2024 FeedPulse. We appreciate every piece of feedback.</p>
-          </div>
+      <footer className="pb-8">
+        <div className="fp-shell">
+          <p className="text-center text-xs text-[#567693]">2026 FeedPulse. Built for clear voices and better decisions.</p>
         </div>
       </footer>
     </div>

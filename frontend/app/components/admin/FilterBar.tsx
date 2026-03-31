@@ -30,11 +30,11 @@ export default function FilterBar({
   };
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
+    <div className="fp-card mb-6 p-6">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
         {/* Search Input */}
         <div className="lg:col-span-2">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="mb-2 block text-sm font-semibold text-[#1f4e78]">
             Search Feedback
           </label>
           <div className="flex gap-2">
@@ -44,26 +44,26 @@ export default function FilterBar({
               onChange={(e) => onSearchChange(e.target.value)}
               onKeyPress={handleSearchKeyPress}
               placeholder="Search by title or summary..."
-              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+              className="fp-input flex-1 px-4 py-2.5 text-sm"
             />
             <button
               onClick={onSearch}
-              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition"
+              className="fp-button-primary px-4 py-2.5 text-sm"
             >
-              🔍
+              Search
             </button>
           </div>
         </div>
 
         {/* Category Filter */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="mb-2 block text-sm font-semibold text-[#1f4e78]">
             Category
           </label>
           <select
             value={category}
             onChange={(e) => onCategoryChange(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+            className="fp-select px-4 py-2.5 text-sm"
           >
             <option value="All">All Categories</option>
             <option value="Bug">Bug</option>
@@ -75,13 +75,13 @@ export default function FilterBar({
 
         {/* Status Filter */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="mb-2 block text-sm font-semibold text-[#1f4e78]">
             Status
           </label>
           <select
             value={status}
             onChange={(e) => onStatusChange(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+            className="fp-select px-4 py-2.5 text-sm"
           >
             <option value="All">All Status</option>
             <option value="New">New</option>
@@ -92,13 +92,13 @@ export default function FilterBar({
 
         {/* Sort Filter */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="mb-2 block text-sm font-semibold text-[#1f4e78]">
             Sort By
           </label>
           <select
             value={sortBy}
             onChange={(e) => onSortChange(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+            className="fp-select px-4 py-2.5 text-sm"
           >
             <option value="date">Date (Newest)</option>
             <option value="priority">Priority (High)</option>
