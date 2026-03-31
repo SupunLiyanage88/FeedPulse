@@ -30,85 +30,65 @@ export default function AdminLogin() {
   };
 
   return (
-    <div className="min-h-screen px-4 py-10">
-      <div className="mx-auto w-full max-w-5xl">
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:items-center">
-          <section className="fp-soft-card p-8 sm:p-10">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#2e74b5]">Admin access</p>
-            <h1 className="mt-3 text-4xl font-bold text-[#173f60]">FeedPulse Control Room</h1>
-            <p className="mt-4 text-sm leading-relaxed text-[#365f80] sm:text-base">
-              Review trends, sort priorities, and manage your feedback pipeline in one place.
-            </p>
-            <div className="mt-6 space-y-3 text-sm text-[#244d6f]">
-              <p className="fp-card px-4 py-3">Centralized feedback triage with live filters.</p>
-              <p className="fp-card px-4 py-3">AI summaries to speed up review decisions.</p>
-              <p className="fp-card px-4 py-3">Status tracking from new to resolved.</p>
-            </div>
-          </section>
+    <div className="min-h-screen bg-linear-to-br from-[#f0f7ff] via-white to-[#f0f7ff]">
+      <div className="mx-auto flex min-h-screen w-full max-w-md items-center px-4 py-10">
+        <div className="w-full rounded-2xl border border-[#d4e3f0] bg-white p-6 shadow-sm sm:p-8">
+          <div className="mb-6">
+            <h1 className="text-2xl font-semibold text-[#1f4e78]">Admin Login</h1>
+            <p className="mt-1 text-sm text-[#5a7c9a]">Sign in to access the FeedPulse dashboard.</p>
+          </div>
 
-          <section className="fp-card p-8 sm:p-10">
+          {error && (
+            <div className="mb-4 rounded-lg border border-rose-200 bg-rose-50 px-3 py-2">
+              <p className="text-sm text-rose-700">{error}</p>
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#2e74b5]">Sign in</p>
-              <h2 className="mt-2 text-3xl font-bold text-[#173f60]">Welcome back</h2>
-              <p className="mt-2 text-sm text-[#466786]">Use your admin credentials to open the dashboard.</p>
-            </div>
-
-            {error && (
-              <div className="mt-6 rounded-2xl border border-[#efbfca] bg-[#fff4f7] p-4">
-                <p className="text-sm font-semibold text-[#972439]">{error}</p>
-              </div>
-            )}
-
-            <form onSubmit={handleSubmit} className="mt-6 space-y-5">
-              {/* Email Field */}
-              <div>
-                <label htmlFor="email" className="mb-2 block text-sm font-semibold text-[#1f4e78]">
-                  Email address
-                </label>
-                <input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="fp-input px-4 py-3 text-sm"
-                  placeholder="admin@feedpulse.com"
-                  disabled={loading}
-                />
-              </div>
-
-              {/* Password Field */}
-              <div>
-                <label htmlFor="password" className="mb-2 block text-sm font-semibold text-[#1f4e78]">
-                  Password
-                </label>
-                <input
-                  id="password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="fp-input px-4 py-3 text-sm"
-                  placeholder="Enter your password"
-                  disabled={loading}
-                />
-              </div>
-
-              {/* Submit Button */}
-              <button
-                type="submit"
+              <label htmlFor="email" className="mb-1 block text-sm font-medium text-slate-700">
+                Email
+              </label>
+              <input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full rounded-lg border border-[#d4e3f0] px-3 py-2.5 text-sm text-[#1f4e78] outline-none transition focus:border-[#1f4e78] focus:ring-2 focus:ring-[#1f4e78]/10 disabled:cursor-not-allowed disabled:bg-slate-100"
+                placeholder="admin@feedpulse.com"
                 disabled={loading}
-                className="fp-button-primary w-full py-3 text-sm"
-              >
-                {loading ? 'Signing in...' : 'Sign in to dashboard'}
-              </button>
-            </form>
-
-            {/* Default Credentials Note */}
-            <div className="mt-6 rounded-2xl border border-[#c7dbef] bg-[#eef5fc] p-4">
-              <p className="text-xs font-semibold text-[#1f4e78]">
-                Default credentials: admin@feedpulse.com / admin123
-              </p>
+                required
+              />
             </div>
-          </section>
+
+            <div>
+              <label htmlFor="password" className="mb-1 block text-sm font-medium text-slate-700">
+                Password
+              </label>
+              <input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full rounded-lg border border-[#d4e3f0] px-3 py-2.5 text-sm text-[#1f4e78] outline-none transition focus:border-[#1f4e78] focus:ring-2 focus:ring-[#1f4e78]/10 disabled:cursor-not-allowed disabled:bg-slate-100"
+                placeholder="Enter password"
+                disabled={loading}
+                required
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full rounded-lg bg-[#1f4e78] px-4 py-2.5 text-sm font-medium text-white transition hover:bg-[#0f3a5a] disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {loading ? 'Signing in...' : 'Sign in'}
+            </button>
+          </form>
+
+          <p className="mt-5 text-xs text-[#5a7c9a]">
+            Demo: admin@feedpulse.com / admin123
+          </p>
         </div>
       </div>
     </div>

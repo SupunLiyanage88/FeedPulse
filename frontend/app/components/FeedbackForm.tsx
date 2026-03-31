@@ -147,61 +147,71 @@ export default function FeedbackForm() {
   const descriptionStatus =
     descriptionLength < 20
       ? descriptionLength === 0
-        ? 'text-gray-400'
-        : 'text-red-500'
-      : 'text-green-600';
+        ? 'text-slate-400'
+        : 'text-rose-500'
+      : 'text-emerald-600';
 
   if (!mounted) {
     return null;
   }
 
   return (
-    <div className="w-full">
-      <form onSubmit={handleSubmit} className="space-y-7">
+    <div className="w-full max-w-2xl mx-auto">
+      <form onSubmit={handleSubmit} className="space-y-6">
         {/* Rate Limit Info */}
         {rateLimitInfo.allowed && rateLimitInfo.remainingSubmissions <= 2 && (
-          <div className="rounded-2xl border border-[#efd9a6] bg-[#fff9ec] p-4">
-            <p className="text-sm text-[#8a6200]">
-              You have {rateLimitInfo.remainingSubmissions} submission
-              {rateLimitInfo.remainingSubmissions !== 1 ? 's' : ''} left this hour.
-            </p>
+          <div className="rounded-xl bg-amber-50/80 p-4 border border-amber-200">
+            <div className="flex items-center gap-2">
+              <span className="text-amber-600">⚠️</span>
+              <p className="text-sm text-amber-700">
+                You have {rateLimitInfo.remainingSubmissions} submission
+                {rateLimitInfo.remainingSubmissions !== 1 ? 's' : ''} left this hour.
+              </p>
+            </div>
           </div>
         )}
 
         {!rateLimitInfo.allowed && (
-          <div className="rounded-2xl border border-[#efbfca] bg-[#fff4f7] p-4">
-            <p className="text-sm text-[#972439]">
-              You have reached the submission limit (5 per hour). Please try again later.
-            </p>
+          <div className="rounded-xl bg-rose-50/80 p-4 border border-rose-200">
+            <div className="flex items-center gap-2">
+              <span className="text-rose-600">🚫</span>
+              <p className="text-sm text-rose-700">
+                You have reached the submission limit (5 per hour). Please try again later.
+              </p>
+            </div>
           </div>
         )}
 
         {/* Success/Error Messages */}
         {submitStatus.type && (
           <div
-            className={`rounded-2xl border p-4 ${
+            className={`rounded-xl p-4 border ${
               submitStatus.type === 'success'
-                ? 'border-[#b6dfc4] bg-[#effbf3]'
-                : 'border-[#efbfca] bg-[#fff4f7]'
+                ? 'bg-emerald-50/80 border-emerald-200'
+                : 'bg-rose-50/80 border-rose-200'
             }`}
           >
-            <p
-              className={`text-sm font-medium ${
-                submitStatus.type === 'success'
-                  ? 'text-[#28683e]'
-                  : 'text-[#972439]'
-              }`}
-            >
-              {submitStatus.type === 'success' ? 'Success: ' : 'Error: '}
-              {submitStatus.message}
-            </p>
+            <div className="flex items-center gap-2">
+              <span className={submitStatus.type === 'success' ? 'text-emerald-600' : 'text-rose-600'}>
+                {submitStatus.type === 'success' ? '✓' : '✗'}
+              </span>
+              <p
+                className={`text-sm font-medium ${
+                  submitStatus.type === 'success'
+                    ? 'text-emerald-700'
+                    : 'text-rose-700'
+                }`}
+              >
+                {submitStatus.message}
+              </p>
+            </div>
           </div>
         )}
 
         {/* Title Field */}
         <div className="space-y-2">
-          <label htmlFor="title" className="block text-sm font-semibold text-[#1f4e78]">
-            Title <span className="text-[#b11f33]">*</span>
+          <label htmlFor="title" className="block text-sm font-semibold text-slate-700">
+            Title <span className="text-rose-500">*</span>
           </label>
           <input
             type="text"
@@ -209,23 +219,23 @@ export default function FeedbackForm() {
             name="title"
             value={formData.title}
             onChange={handleInputChange}
-            placeholder="Subject of your feedback"
+            placeholder="What's your feedback about?"
             maxLength={120}
             disabled={isSubmitting || !rateLimitInfo.allowed}
-            className={`fp-input px-4 py-3 text-sm ${
+            className={`w-full rounded-xl border-2 bg-white px-4 py-3 text-sm transition-all focus:outline-none focus:ring-2 disabled:bg-slate-50 disabled:cursor-not-allowed ${
               errors.title
-                ? 'border-[#b11f33] !shadow-[0_0_0_3px_rgba(177,31,51,0.15)]'
-                : ''
+                ? 'border-rose-300 focus:border-rose-500 focus:ring-rose-200'
+                : 'border-slate-200 focus:border-indigo-400 focus:ring-indigo-100'
             }`}
           />
-          {errors.title && <p className="text-sm text-[#b11f33]">{errors.title}</p>}
-          <p className="text-xs text-[#5f7f9b]">{formData.title.length}/120 characters</p>
+          {errors.title && <p className="text-sm text-rose-600">{errors.title}</p>}
+          <p className="text-xs text-slate-500">{formData.title.length}/120 characters</p>
         </div>
 
         {/* Category Field */}
         <div className="space-y-2">
-          <label htmlFor="category" className="block text-sm font-semibold text-[#1f4e78]">
-            Category <span className="text-[#b11f33]">*</span>
+          <label htmlFor="category" className="block text-sm font-semibold text-slate-700">
+            Category <span className="text-rose-500">*</span>
           </label>
           <select
             id="category"
@@ -233,19 +243,19 @@ export default function FeedbackForm() {
             value={formData.category}
             onChange={handleInputChange}
             disabled={isSubmitting || !rateLimitInfo.allowed}
-            className="fp-select px-4 py-3 text-sm"
+            className="w-full rounded-xl border-2 border-slate-200 bg-white px-4 py-3 text-sm transition-all focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 disabled:bg-slate-50 disabled:cursor-not-allowed"
           >
-            <option value="Bug">Bug</option>
-            <option value="Feature Request">Feature Request</option>
-            <option value="Improvement">Improvement</option>
-            <option value="Other">Other</option>
+            <option value="Bug">🐛 Bug</option>
+            <option value="Feature Request">✨ Feature Request</option>
+            <option value="Improvement">⚡ Improvement</option>
+            <option value="Other">💬 Other</option>
           </select>
         </div>
 
         {/* Description Field */}
         <div className="space-y-2">
-          <label htmlFor="description" className="block text-sm font-semibold text-[#1f4e78]">
-            Description <span className="text-[#b11f33]">*</span>
+          <label htmlFor="description" className="block text-sm font-semibold text-slate-700">
+            Description <span className="text-rose-500">*</span>
           </label>
           <textarea
             id="description"
@@ -255,27 +265,37 @@ export default function FeedbackForm() {
             placeholder="Please provide detailed feedback (minimum 20 characters)"
             rows={5}
             disabled={isSubmitting || !rateLimitInfo.allowed}
-            className={`fp-textarea resize-none px-4 py-3 text-sm ${
+            className={`w-full rounded-xl border-2 bg-white px-4 py-3 text-sm transition-all focus:outline-none focus:ring-2 disabled:bg-slate-50 disabled:cursor-not-allowed resize-none ${
               errors.description
-                ? 'border-[#b11f33] !shadow-[0_0_0_3px_rgba(177,31,51,0.15)]'
-                : ''
+                ? 'border-rose-300 focus:border-rose-500 focus:ring-rose-200'
+                : 'border-slate-200 focus:border-indigo-400 focus:ring-indigo-100'
             }`}
           />
           {errors.description && (
-            <p className="text-sm text-[#b11f33]">{errors.description}</p>
+            <p className="text-sm text-rose-600">{errors.description}</p>
           )}
-          <div className="mt-2 flex items-center justify-between">
-            <p className={`text-xs font-medium ${descriptionStatus}`}>
-              {descriptionLength}/20 minimum • {descriptionLength} characters
-              {descriptionLength >= 20 && ' ✓'}
-            </p>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="h-1.5 w-24 overflow-hidden rounded-full bg-slate-100">
+                <div 
+                  className={`h-full transition-all duration-300 ${
+                    descriptionLength >= 20 ? 'bg-emerald-500' : 'bg-rose-400'
+                  }`}
+                  style={{ width: `${Math.min((descriptionLength / 20) * 100, 100)}%` }}
+                />
+              </div>
+              <p className={`text-xs font-medium ${descriptionStatus}`}>
+                {descriptionLength}/20 minimum
+                {descriptionLength >= 20 && ' ✓'}
+              </p>
+            </div>
           </div>
         </div>
 
         {/* Name Field (Optional) */}
         <div className="space-y-2">
-          <label htmlFor="submitterName" className="block text-sm font-semibold text-[#1f4e78]">
-            Name <span className="text-[#6888a3]">(optional)</span>
+          <label htmlFor="submitterName" className="block text-sm font-semibold text-slate-700">
+            Name <span className="text-slate-400">(optional)</span>
           </label>
           <input
             type="text"
@@ -285,14 +305,14 @@ export default function FeedbackForm() {
             onChange={handleInputChange}
             placeholder="Your name"
             disabled={isSubmitting || !rateLimitInfo.allowed}
-            className="fp-input px-4 py-3 text-sm"
+            className="w-full rounded-xl border-2 border-slate-200 bg-white px-4 py-3 text-sm transition-all focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 disabled:bg-slate-50 disabled:cursor-not-allowed"
           />
         </div>
 
         {/* Email Field (Optional) */}
         <div className="space-y-2">
-          <label htmlFor="submitterEmail" className="block text-sm font-semibold text-[#1f4e78]">
-            Email <span className="text-[#6888a3]">(optional)</span>
+          <label htmlFor="submitterEmail" className="block text-sm font-semibold text-slate-700">
+            Email <span className="text-slate-400">(optional)</span>
           </label>
           <input
             type="email"
@@ -302,14 +322,14 @@ export default function FeedbackForm() {
             onChange={handleInputChange}
             placeholder="your.email@example.com"
             disabled={isSubmitting || !rateLimitInfo.allowed}
-            className={`fp-input px-4 py-3 text-sm ${
+            className={`w-full rounded-xl border-2 bg-white px-4 py-3 text-sm transition-all focus:outline-none focus:ring-2 disabled:bg-slate-50 disabled:cursor-not-allowed ${
               errors.submitterEmail
-                ? 'border-[#b11f33] !shadow-[0_0_0_3px_rgba(177,31,51,0.15)]'
-                : ''
+                ? 'border-rose-300 focus:border-rose-500 focus:ring-rose-200'
+                : 'border-slate-200 focus:border-indigo-400 focus:ring-indigo-100'
             }`}
           />
           {errors.submitterEmail && (
-            <p className="text-sm text-[#b11f33]">{errors.submitterEmail}</p>
+            <p className="text-sm text-rose-600">{errors.submitterEmail}</p>
           )}
         </div>
 
@@ -317,11 +337,11 @@ export default function FeedbackForm() {
         <button
           type="submit"
           disabled={isSubmitting || !rateLimitInfo.allowed}
-          className="fp-button-primary w-full px-4 py-3.5 text-sm"
+          className="w-full rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-700 px-4 py-3.5 text-sm font-semibold text-white transition-all hover:from-indigo-700 hover:to-indigo-800 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-none"
         >
           {isSubmitting ? (
-            <span className="flex items-center justify-center">
-              <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <span className="flex items-center justify-center gap-2">
+              <svg className="h-5 w-5 animate-spin text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
               </svg>
@@ -333,7 +353,7 @@ export default function FeedbackForm() {
         </button>
 
         {/* Footer Note */}
-        <p className="text-center text-xs text-[#5f7f9b]">
+        <p className="text-center text-xs text-slate-500">
           No account needed. We value your feedback to improve our service.
         </p>
       </form>

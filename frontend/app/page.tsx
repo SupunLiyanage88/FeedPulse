@@ -1,4 +1,5 @@
 import FeedbackForm from './components/FeedbackForm';
+import Link from 'next/link';
 
 export default function Home() {
   return (
@@ -11,10 +12,12 @@ export default function Home() {
               <h1 className="mt-2 text-3xl font-bold text-[#163f61] sm:text-4xl">FeedPulse</h1>
               <p className="mt-2 text-sm text-[#335b7b] sm:text-base">Simple feedback collection with thoughtful analysis.</p>
             </div>
-            <div className="fp-soft-card px-4 py-3 text-sm text-[#1f4e78]">
-              <p className="font-semibold">No account required</p>
-              <p className="mt-1 text-xs text-[#365f80]">Share ideas, issues, and improvements in minutes.</p>
-            </div>
+            <Link
+              href="/admin/login"
+              className="fp-button-primary inline-flex items-center justify-center px-5 py-3 text-sm"
+            >
+              Admin Login
+            </Link>
           </div>
         </div>
       </header>
@@ -64,9 +67,6 @@ export default function Home() {
       </main>
 
       <footer className="pb-8">
-        <div className="fp-shell">
-          <p className="text-center text-xs text-[#567693]">2026 FeedPulse. Built for clear voices and better decisions.</p>
-        </div>
       </footer>
     </div>
   );
