@@ -52,19 +52,28 @@ export const submitFeedback = async (req: Request, res: Response) => {
 // Get all feedback (admin only)
 export const getAllFeedback = async (req: AuthRequest, res: Response) => {
   try {
-    const { category, status, sortBy, page = 1, limit = 10 } = req.query;
+    const { category, status, sortBy, page = 1, limit = 10, search } = req.query;
     
     const filter: any = {};
-    if (category) filter.category = category;
-    if (status) filter.status = status;
+    if (category && category !== 'All') filter.category = category;
+    if (status && status !== 'All') filter.status = status;
+    
+    // Search in title and ai_summary
+    if (search && (search as string).trim()) {
+      const searchRegex = new RegExp((search as string).trim(), 'i');
+      filter.$or = [
+        { title: searchRegex },
+        { ai_summary: searchRegex },
+      ];
+    }
     
     let sort: any = { createdAt: -1 };
     if (sortBy === 'priority') sort = { ai_priority: -1 };
     if (sortBy === 'date') sort = { createdAt: -1 };
     if (sortBy === 'sentiment') sort = { ai_sentiment: 1 };
     
-    const pageNum = parseInt(page as string);
-    const limitNum = parseInt(limit as string);
+    const pageNum = parseInt(page as string) || 1;
+    const limitNum = parseInt(limit as string) || 10;
     const skip = (pageNum - 1) * limitNum;
     
     const [feedbacks, total] = await Promise.all([
@@ -213,6 +222,54 @@ export const getAISummary = async (req: AuthRequest, res: Response) => {
           from: sevenDaysAgo,
           to: new Date(),
         },
+      },
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+// Get dashboard statistics
+export const getStats = async (req: AuthRequest, res: Response) => {
+  try {
+    const [total, openCount, allFeedbacks] = await Promise.all([
+      Feedback.countDocuments(),
+      Feedback.countDocuments({ status: { $ne: 'Resolved' } }),
+      Feedback.find({ ai_processed: true, ai_priority: { $exists: true } }),
+    ]);
+
+    // Calculate average priority score
+    const avgPriority =
+      allFeedbacks.length > 0
+        ? (
+            allFeedbacks.reduce((sum, f) => sum + (f.ai_priority || 0), 0) /
+            allFeedbacks.length
+          ).toFixed(1)
+        : 0;
+
+    // Count tags and find most common
+    const tagCounts: Record<string, number> = {};
+    allFeedbacks.forEach((f) => {
+      (f.ai_tags || []).forEach((tag: string) => {
+        tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+      });
+    });
+
+    const mostCommonTag =
+      Object.entries(tagCounts).length > 0
+        ? Object.entries(tagCounts).sort((a, b) => b[1] - a[1])[0][0]
+        : 'N/A';
+
+    res.json({
+      success: true,
+      data: {
+        totalFeedback: total,
+        openItems: openCount,
+        averagePriority: parseFloat(avgPriority as string),
+        mostCommonTag,
       },
     });
   } catch (error: any) {
