@@ -7,8 +7,10 @@ import {
   getFeedbackList,
   updateFeedbackStatus,
   deleteFeedback,
+  retriggerFeedbackAnalysis,
+  getWeeklySummary,
   DashboardStats,
-  FeedbackListResponse,
+  WeeklySummaryResponse,
   Feedback,
 } from '@/app/lib/adminApi';
 import { getAdminToken, clearAdminAuth } from '@/app/lib/adminAuth';
@@ -27,6 +29,8 @@ export default function AdminDashboard() {
   const [feedbacks, setFeedbacks] = useState<Feedback[]>([]);
   const [statsLoading, setStatsLoading] = useState(false);
   const [feedbackLoading, setFeedbackLoading] = useState(false);
+  const [summary, setSummary] = useState<WeeklySummaryResponse | null>(null);
+  const [summaryLoading, setSummaryLoading] = useState(false);
 
   // Filter states
   const [category, setCategory] = useState('All');
@@ -38,6 +42,7 @@ export default function AdminDashboard() {
 
   // Action states
   const [statusUpdating, setStatusUpdating] = useState<Record<string, boolean>>({});
+  const [reanalyzing, setReanalyzing] = useState<Record<string, boolean>>({});
   const [deleting, setDeleting] = useState<Record<string, boolean>>({});
 
   // Check authentication on mount
@@ -86,11 +91,24 @@ export default function AdminDashboard() {
     setFeedbackLoading(false);
   };
 
+  const fetchWeeklySummary = async () => {
+    if (!token) return;
+    setSummaryLoading(true);
+    const result = await getWeeklySummary(token);
+    if (result.success && result.data) {
+      setSummary(result.data);
+    } else {
+      console.error('Failed to fetch summary:', result.message);
+    }
+    setSummaryLoading(false);
+  };
+
   // Fetch data on mount
   useEffect(() => {
     if (token) {
       fetchStats();
       fetchFeedback();
+      fetchWeeklySummary();
     }
   }, [token]);
 
@@ -150,9 +168,31 @@ export default function AdminDashboard() {
       setFeedbacks((prev) => prev.filter((f) => f._id !== feedbackId));
       // Refresh stats
       fetchStats();
+      fetchWeeklySummary();
     } else {
       alert('Failed to delete feedback: ' + result.message);
     }
+  };
+
+  const handleReanalyzeFeedback = async (feedbackId: string) => {
+    if (!token) return;
+
+    setReanalyzing((prev) => ({ ...prev, [feedbackId]: true }));
+    const result = await retriggerFeedbackAnalysis(token, feedbackId);
+    setReanalyzing((prev) => ({ ...prev, [feedbackId]: false }));
+
+    if (!result.success || !result.data) {
+      alert('Failed to re-run AI analysis: ' + result.message);
+      return;
+    }
+
+    setFeedbacks((prev) =>
+      prev.map((feedback) =>
+        feedback._id === feedbackId ? result.data! : feedback
+      )
+    );
+    fetchStats();
+    fetchWeeklySummary();
   };
 
   const handleSearch = () => {
@@ -201,6 +241,29 @@ export default function AdminDashboard() {
         {/* Stats Bar */}
         <StatsBar stats={stats} loading={statsLoading} />
 
+        {/* Weekly AI Summary */}
+        <section className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
+          <div className="flex items-center justify-between gap-3 mb-2">
+            <h2 className="text-lg font-semibold text-gray-900">AI Weekly Summary</h2>
+            <button
+              onClick={fetchWeeklySummary}
+              disabled={summaryLoading}
+              className="px-3 py-2 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded-lg disabled:opacity-50"
+            >
+              {summaryLoading ? 'Refreshing...' : 'Refresh'}
+            </button>
+          </div>
+          <p className="text-sm text-gray-600 mb-3">Top 3 themes from the last 7 days of feedback.</p>
+          <p className="text-gray-800 leading-relaxed">
+            {summaryLoading
+              ? 'Generating summary...'
+              : summary?.summary || 'No summary available yet.'}
+          </p>
+          <p className="text-xs text-gray-500 mt-3">
+            Feedback items analyzed: {summary?.totalCount ?? 0}
+          </p>
+        </section>
+
         {/* Filters */}
         <FilterBar
           category={category}
@@ -220,7 +283,9 @@ export default function AdminDashboard() {
           loading={feedbackLoading}
           onStatusChange={handleStatusChange}
           onDelete={handleDeleteFeedback}
+          onReanalyze={handleReanalyzeFeedback}
           statusUpdating={statusUpdating}
+          reanalyzing={reanalyzing}
           deleting={deleting}
         />
 
