@@ -29,7 +29,8 @@ import {
 
 export default function AdminDashboard() {
   const router = useRouter();
-  const [token] = useState<string | null>(() => getAdminToken());
+  const [token, setToken] = useState<string | null>(null);
+  const [isHydrated, setIsHydrated] = useState(false);
 
   // Data states
   const [stats, setStats] = useState<DashboardStats | null>(null);
@@ -52,12 +53,16 @@ export default function AdminDashboard() {
   const [reanalyzing, setReanalyzing] = useState<Record<string, boolean>>({});
   const [deleting, setDeleting] = useState<Record<string, boolean>>({});
 
-  // Check authentication on mount
+  // Initialize token and check authentication on client-side mount
   useEffect(() => {
-    if (!token) {
+    const storedToken = getAdminToken();
+    setToken(storedToken);
+    setIsHydrated(true);
+
+    if (!storedToken) {
       router.push('/admin/login');
     }
-  }, [router, token]);
+  }, [router]);
 
   // Fetch stats
   const fetchStats = async () => {
@@ -206,6 +211,18 @@ export default function AdminDashboard() {
     clearAdminAuth();
     router.push('/admin/login');
   };
+
+  // Show loading state until hydration is complete
+  if (!isHydrated) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-linear-to-r from-slate-50 to-slate-100">
+        <div className="rounded-2xl bg-white/80 backdrop-blur-sm p-8 shadow-xl">
+          <div className="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-indigo-500 border-t-transparent"></div>
+          <p className="mt-4 text-sm font-medium text-slate-600">Loading dashboard...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (!token) {
     return (

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-label="Admin Dashboard screenshot placeholder">
+  <defs>
+    <style>
+      .bg { fill: #f8fafc; }
+      .card { fill: #ffffff; stroke: #cbd5e1; stroke-width: 2; }
+      .title { font: 700 40px system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; fill: #0f172a; }
+      .text { font: 500 22px system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; fill: #334155; }
+      .muted { font: 400 18px system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; fill: #64748b; }
+      .dash { fill: none; stroke: #94a3b8; stroke-width: 3; stroke-dasharray: 10 10; }
+    </style>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1200" height="675" />
+
+  <rect class="card" x="70" y="70" width="1060" height="535" rx="24" />
+  <rect class="dash" x="110" y="130" width="980" height="435" rx="18" />
+
+  <text class="title" x="130" y="190">Admin Dashboard</text>
+  <text class="text" x="130" y="245">Screenshot placeholder</text>
+  <text class="muted" x="130" y="290">Replace this file with a real screenshot:</text>
+  <text class="muted" x="130" y="325">docs/screenshots/admin-dashboard.png (or .jpg)</text>
+
+  <text class="muted" x="130" y="405">Suggested capture:</text>
+  <text class="muted" x="130" y="440">- Open http://localhost:3000/admin/dashboard</text>
+  <text class="muted" x="130" y="475">- Capture stats + table in one view</text>
+</svg>
