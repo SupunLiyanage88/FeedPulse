@@ -122,15 +122,21 @@ FeedPulse is an AI-assisted product feedback platform. It provides a public feed
 The repository includes placeholder screenshots in `docs/screenshots/`. Replace them with real UI screenshots when you’re ready.
 
 ### Feedback Form
-![Feedback Form](docs/screenshots/feedback-form.svg)
+![Feedback Form](docs/screenshots/feedback-form.png)
 
 ### Admin Login
-![Admin Login](docs/screenshots/admin-login.svg)
+![Admin Login](docs/screenshots/admin-login.png)
 
 ### Admin Dashboard
-![Admin Dashboard](docs/screenshots/admin-dashboard.svg)
+![Admin Dashboard](docs/screenshots/admin-dashboard.png)
 
 ## Notes
 
 - AI analysis is triggered asynchronously after feedback submission. If `GEMINI_API_KEY` is not set, feedback still saves normally, but AI fields will remain empty.
 - Admin routes require `Authorization: Bearer <token>` after logging in.
+
+## What I’d Build Next (With More Time)
+
+- Expand admin capabilities: roles/permissions, assignment, internal notes, and audit logs.
+- Improve data quality and safety: spam protection (CAPTCHA), stronger rate limiting, and moderation tooling.
+- Add integrations/exports (CSV export, webhooks, Slack/email notifications) for closing the feedback loop.
