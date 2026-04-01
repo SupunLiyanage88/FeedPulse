@@ -119,16 +119,14 @@ FeedPulse is an AI-assisted product feedback platform. It provides a public feed
 
 ## Screenshots
 
-The repository includes placeholder screenshots in `docs/screenshots/`. Replace them with real UI screenshots when you’re ready.
-
 ### Feedback Form
-![Feedback Form](docs/screenshots/feedback-form.svg)
+![Feedback Form](docs/screenshots/feedback-form.png)
 
 ### Admin Login
-![Admin Login](docs/screenshots/admin-login.svg)
+![Admin Login](docs/screenshots/admin-login.png)
 
 ### Admin Dashboard
-![Admin Dashboard](docs/screenshots/admin-dashboard.svg)
+![Admin Dashboard](docs/screenshots/admin-dashboard.png)
 
 ## Notes
 
