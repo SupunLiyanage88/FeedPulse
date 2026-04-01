@@ -95,6 +95,106 @@ FeedPulse is an AI-assisted product feedback platform. It provides a public feed
 	- Admin login: http://localhost:3000/admin/login
 	- Admin dashboard: http://localhost:3000/admin/dashboard
 
+## Quick Start with Docker (Recommended)
+
+The easiest way to run the entire application (backend, frontend, and MongoDB) is with Docker Compose. This method requires only Docker and Docker Compose to be installed—no Node.js installation needed.
+
+### Prerequisites
+
+- Docker and Docker Compose (Download from [docker.com](https://www.docker.com/products/docker-desktop))
+
+### Steps
+
+1. **Clone and navigate to the project:**
+	```bash
+	git clone https://github.com/SupunLiyanage88/FeedPulse
+	cd FeedPulse
+	```
+
+2. **(Optional) Create a `.env` file at the project root** for sensitive environment variables:
+	```env
+	# Optional: Override defaults for production/security
+	JWT_SECRET=your_secure_random_string_here
+	GEMINI_API_KEY=your_gemini_api_key_here
+	ADMIN_EMAIL=admin@feedpulse.com
+	ADMIN_PASSWORD=admin123
+	```
+
+	> If you skip this, Docker will use safe defaults (JWT_SECRET will default to a placeholder—change this for production).
+
+3. **Start the entire application:**
+	```bash
+	docker-compose up --build
+	```
+
+	This command:
+	- Builds Docker images for the backend and frontend
+	- Starts MongoDB (automatically initialized)
+	- Starts the Express backend API
+	- Starts the Next.js frontend
+	- Connects everything together on a Docker network
+
+	> **First run may take 2–3 minutes** due to dependency installation and building. Subsequent runs are much faster.
+
+4. **Wait until all services are healthy:**
+	```
+	feedpulse-db        | Connection successful
+	feedpulse-backend   | Server running on http://localhost:5000
+	feedpulse-frontend  | Ready in Xs
+	```
+
+5. **Access the application:**
+	- **Frontend (feedback form):** http://localhost:3000
+	- **Admin login:** http://localhost:3000/admin/login
+	- **Admin dashboard:** http://localhost:3000/admin/dashboard
+	- **Backend health check:** http://localhost:5000/health
+	- **MongoDB:** localhost:27017 (exposed for debugging, default credentials: none)
+
+6. **Default admin credentials:**
+	```
+	Email: admin@feedpulse.com
+	Password: admin123
+	```
+
+### Docker Troubleshooting
+
+**Ports already in use?**
+```bash
+# Stop and remove all FeedPulse containers
+docker-compose down
+
+# OR free up specific ports and try again
+docker ps  # check what's running
+docker kill <container_id>
+```
+
+**Rebuild from scratch?**
+```bash
+docker-compose down -v        # Remove volumes (deletes database)
+docker-compose up --build     # Rebuild and start fresh
+```
+
+**Check logs:**
+```bash
+docker-compose logs -f backend   # Backend logs
+docker-compose logs -f frontend  # Frontend logs
+docker-compose logs -f mongodb   # Database logs
+```
+
+**Verify services:**
+```bash
+docker-compose ps               # Show all running services
+curl http://localhost:5000/health  # Health check API
+```
+
+### Docker Compose Configuration
+
+The `docker-compose.yml` file defines:
+- **backend**: Express.js API with health checks
+- **frontend**: Next.js application with automatic API pointing
+
+All services automatically connect through a shared Docker network (`feedpulse-network`).
+
 ## Environment Variables
 
 ### Backend (`backend/.env`)

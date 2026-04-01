@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  # Backend API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: feedpulse-backend
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      # MongoDB connection using Docker service name
+      MONGODB_URI: mongodb://mongodb:27017/feedpulse
+      
+      # Server configuration
+      PORT: 5000
+      NODE_ENV: production
+      
+      # JWT configuration
+      JWT_SECRET: ${JWT_SECRET:-change_me_to_a_long_random_string}
+      JWT_EXPIRES_IN: 7d
+      
+      # Admin credentials (for seeding or default login)
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@feedpulse.com}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin123}
+      
+      # Gemini API (optional - AI features)
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      GEMINI_MODEL: ${GEMINI_MODEL:-gemini-2-flash}
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:5000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Frontend Application
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: feedpulse-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    depends_on:
+      backend:
+        condition: service_healthy
+    environment:
+      # API URL for frontend (points to backend container)
+      NEXT_PUBLIC_API_URL: http://backend:5000
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  default:
+    name: feedpulse-network
